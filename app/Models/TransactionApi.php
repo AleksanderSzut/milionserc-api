@@ -13,10 +13,10 @@ class TransactionApi extends \tpayLibs\src\_class_tpay\TransactionApi
 
     public function __construct()
     {
-        $this->merchantSecret = env('TPAY_MERCHANT_SECRET');
-        $this->merchantId = (int)env('TPAY_MERCHANT_ID');
-        $this->trApiKey = env('TPAY_TR_API_KEY');
-        $this->trApiPass = env('TPAY_TR_API_PASS');
+        $this->merchantSecret = 'demo';
+        $this->merchantId = 1010;
+        $this->trApiKey = '75f86137a6635df826e3efe2e66f7c9a946fdde1';
+        $this->trApiPass = 'p@$$w0rd#@!';
         parent::__construct();
     }
 
@@ -58,8 +58,8 @@ class TransactionApi extends \tpayLibs\src\_class_tpay\TransactionApi
             $res = $this->create($config);
             return $res['url'];
         } catch (TException $e) {
+            Log::debug( $e);
             return false;
-            Log::debug('Tpay error', $e);
         }
 
     }
