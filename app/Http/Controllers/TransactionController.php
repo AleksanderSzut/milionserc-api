@@ -26,10 +26,11 @@ class TransactionController extends Controller
             'test_mode' => '1',
             'md5sum' => '0d1cf3083e2fe3b49d046c28e28d120c',
         );
+        Log::critical($request);
         try {
             $notificationApi = new TransactionNotificationApi();
             $notification = $notificationApi->getTpayNotification();
-            dd($notification);
+            Log::critical((string)$notification);
         } catch (TException $e) {
             Log::critical($e);
         }
