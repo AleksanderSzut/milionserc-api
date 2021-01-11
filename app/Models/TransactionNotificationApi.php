@@ -21,7 +21,7 @@ class TransactionNotificationApi extends BasicNotificationHandler
      */
     public function getTpayNotification(): array
     {
-
+        $this->enableForwardedIPValidation();
         return $this->checkPayment();
     }
 }
