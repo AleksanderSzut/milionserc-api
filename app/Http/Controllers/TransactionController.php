@@ -14,7 +14,7 @@ class TransactionController extends Controller
         try {
             $notificationApi = new TransactionNotificationApi();
             $notification = $notificationApi->getTpayNotification();
-            Log::info("Udało się");
+            Log::info(json_encode($notification));
         } catch (TException $e) {
             Log::info("Nie udało się");
         }
