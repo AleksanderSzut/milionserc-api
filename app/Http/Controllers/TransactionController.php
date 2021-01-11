@@ -11,13 +11,12 @@ class TransactionController extends Controller
 {
     public function create(Request $request)
     {
-        Log::critical(print_r($request));
         try {
             $notificationApi = new TransactionNotificationApi();
             $notification = $notificationApi->getTpayNotification();
-            Log::critical((string)$notification);
+            Log::info("Udało się");
         } catch (TException $e) {
-            Log::critical($e);
+            Log::info("Nie udało się");
         }
     }
 }
