@@ -15,7 +15,7 @@ class PackageAdditionals implements \Illuminate\Contracts\Validation\Rule
      */
     public function passes($attribute, $value): bool
     {
-        return AdditionalPackageAttribute::where('id', $value)->exists() ;
+        return AdditionalPackageAttribute::where('id', $value)->exists();
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,3 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('order', [OrderController::class, 'create']);
 Route::get('confessions', [OrderController::class, 'index']);
+Route::post('transactionReturnUrl', [TransactionController::class, 'create']);
+Route::fallback(function(){
+    return response()->json([
+        'message' => 'Page Not Found. If error persists, contact kontakt@milionserc.pl'], 404);
+});
