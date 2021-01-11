@@ -11,7 +11,7 @@ class TransactionController extends Controller
 {
     public function create(Request $request)
     {
-        Log::critical($request);
+        Log::critical(print_r($request));
         try {
             $notificationApi = new TransactionNotificationApi();
             $notification = $notificationApi->getTpayNotification();
