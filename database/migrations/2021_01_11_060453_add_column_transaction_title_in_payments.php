@@ -14,7 +14,7 @@ class AddColumnTransactionTitleInPayments extends Migration
     public function up()
     {
         Schema::table('payments', function (Blueprint $table) {
-            $table->mediumText('transaction_title')->unique()->nullable()->after("id");
+            $table->mediumText('transaction_title')->nullable()->after("id");
         });
     }
 
