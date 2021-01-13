@@ -14,7 +14,7 @@ class AddColumnUuidToConfessionsTable extends Migration
     public function up()
     {
         Schema::table('confessions', function (Blueprint $table) {
-            $table->mediumText('uuid')->unique()->after("id");
+            $table->mediumText('uuid')->after("id");
         });
     }
 
@@ -26,7 +26,6 @@ class AddColumnUuidToConfessionsTable extends Migration
     public function down()
     {
         Schema::table('confessions', function (Blueprint $table) {
-            $table->mediumText('uuid')->unique()->after("id");
             $table->dropColumn("uuid");
         });
     }
