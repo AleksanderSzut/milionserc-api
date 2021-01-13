@@ -122,15 +122,16 @@ class OrderController extends Controller
 
         $payment->to_pay = $this->calculateThePrice($request);
 
-        $payment->status = 0;
+        $payment->status = Payment::STATUS_WAITING;
 
         $payment->save();
 
         return $payment;
     }
 
-    protected function addCartData(Request $request, Order $order): void
+    protected function addCartData(Request $request, Order $order): bool
     {
+        $allOk  = true;
         foreach ($request['cartItems'] as $value) {
 
             $cart = new Cart();
@@ -138,7 +139,8 @@ class OrderController extends Controller
             $cart->package()->associate(Package::find($value['packageId']));
             $cart->order()->associate($order);
 
-            $cart->save();
+            if($cart->save())
+                $allOk = false;
 
             foreach ($value['additionals'] as $additional) {
                 $additionalAttributeCart = new AdditionalAttributeCart();
@@ -148,9 +150,19 @@ class OrderController extends Controller
                 $additionalAttributeCart->AdditionalPackageAttribute()->associate($additionalPackageAttribute);
                 $additionalAttributeCart->cart()->associate($cart);
 
-                $additionalAttributeCart->save();
+                if(!$additionalAttributeCart->save())
+                    $allOk = false;
             }
         }
+        return $allOk;
+    }
+
+    protected function failsCreate($message){
+        return response()->json([
+            'status' => 'ORDER_SERVER_ERROR',
+            'statusCode' => 0,
+            'statusMessage' => $message
+        ])->setStatusCode(422);
     }
 
     public function create(Request $request)
@@ -169,23 +181,30 @@ class OrderController extends Controller
         } else {
             $order = new Order;
 
+            $allOk = false;
+
             $shipping = $this->addShippingData($request);
             $billing = $this->addBillingData($request);
             $payment = $this->addPaymentData($request);
 
 
-            $order->status = 0;
+            $transactionLink = $payment->getTransactionLink();
+
+
+            $order->status = Order::STATUS_NOT_PAID;
+
             $order->billing()->associate($billing);
             $order->shipping()->associate($shipping);
             $order->payment()->associate($payment);
 
             $order->push();
 
-            $this->addCartData($request, $order);
-
+            $payment->createTransaction();
             $transactionLink = $payment->getTransactionLink();
 
-            $this->ordered($request, $order);
+            $this->addCartData($request, $order);
+
+            $this->ordered($request, $order, $transactionLink);
 
             return response()->json([
                 'status' => 'ORDER_SUCCESSFUL',
@@ -198,15 +217,14 @@ class OrderController extends Controller
         }
     }
 
-    protected function ordered(Request $request, Order $order)
+    protected function ordered(Request $request, Order $order, $transactionLink)
     {
         $email = $order->billing->email;
         $payment = $order->payment;
         $toPay = $payment->to_pay/100;
-        $paymentLink = $payment->getTransactionLink();
         $fullName = $order->billing->full_name;
 
-        dispatch_now(new SendEmailJob($email, $paymentLink, $fullName, $toPay));
+        dispatch_now(new SendEmailJob($email, $transactionLink, $fullName, $toPay));
     }
 
     public function store(Request $request)

@@ -10,16 +10,17 @@ use phpDocumentor\Reflection\Types\Mixed_;
 
 class Payment extends Model
 {
-    const TPAY_URL = "https://secure.tpay.com";
     use HasFactory;
-
+    const STATUS_WAITING = 0;
+    const STATUS_PAID = 1;
+    const STATUS_REJECTED = 2;
 
     public function order(): HasOne
     {
         return $this->hasOne(Order::class);
     }
 
-    public function getTransactionLink(): String
+    public function createTransaction(): bool
     {
         $to_pay = $this->to_pay / 100;
         $description = "Wyznania milionserc";
@@ -27,11 +28,24 @@ class Payment extends Model
         $orderId = $order->id;
         $email = $order->billing->email;
         $name = $order->billing->full_name;
-        $resultUrl = config('app.url') . '?transaction_confirmation';
-        $returnUrl = env('APP_API_URL') . '/api/transactionReturnUrl';
+        $returnUrl = config('app.url') . '?transaction_confirmation';
+        $resultUrl = env('APP_API_URL') . '/api/transactionReturnUrl';
 
         $transactionApi = new TransactionApi();
 
-        return $transactionApi->createTransaction($to_pay, $description, $email, $name, $orderId, $resultUrl, $returnUrl);
+        $result = $transactionApi->createTransaction($to_pay, $description, $email, $name, $orderId, $resultUrl, $returnUrl);
+
+        if ($result['result']) {
+            $this->transaction_title = $result['title'];
+            $this->save();
+            return true;
+        } else
+            return false;
+
+    }
+
+    public function getTransactionLink(): string
+    {
+        return "https://secure.tpay.com/?gtitle=" . $this->transaction_title;
     }
 }

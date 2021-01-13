@@ -14,7 +14,7 @@ class DeleteTableAccessCodeFromOrdersTableAndAddColumnAccessCodeToConfessionsTab
     public function up()
     {
         Schema::table('confessions', function (Blueprint $table) {
-            $table->mediumText('access_code');
+            $table->mediumText('access_code')->after("public");
         });
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn('access_code');

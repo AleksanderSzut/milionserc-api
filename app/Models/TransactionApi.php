@@ -55,8 +55,7 @@ class TransactionApi extends \tpayLibs\src\_class_tpay\TransactionApi
             'accept_tos' => 1,
         );
         try {
-            $res = $this->create($config);
-            return $res['url'];
+            return $this->create($config);
         } catch (TException $e) {
             Log::debug( $e);
             return false;

@@ -14,11 +14,11 @@ class CreateForeginKeyForImgAndVideoTable extends Migration
     public function up()
     {
         Schema::table('video', function (Blueprint $table) {
-            $table->foreignId('confession_id')->nullable()->constrained('confessions')->onDelete('cascade');
+            $table->foreignId('confession_id')->nullable()->after("id")->constrained('confessions')->onDelete('cascade');
 
         });
         Schema::table('img', function (Blueprint $table) {
-            $table->foreignId('confession_id')->nullable()->constrained('confessions')->onDelete('cascade');
+            $table->foreignId('confession_id')->nullable()->after("id")->constrained('confessions')->onDelete('cascade');
         });
     }
 

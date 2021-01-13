@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateForeignKeyForConfessionsTable extends Migration
+class AddColumnTransactionTitleInPayments extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class CreateForeignKeyForConfessionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('confessions', function (Blueprint $table) {
-            $table->foreignId('package_id')->after("content")->nullable()->constrained('packages')->onDelete('cascade');
-
+        Schema::table('payments', function (Blueprint $table) {
+            $table->mediumText('transaction_title')->unique()->nullable()->after("id");
         });
     }
 
@@ -26,8 +25,8 @@ class CreateForeignKeyForConfessionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('confessions', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('package_id');
+        Schema::table('payments', function (Blueprint $table) {
+            $table->dropColumn('transaction_title');
         });
     }
 }

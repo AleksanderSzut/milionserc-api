@@ -18,7 +18,6 @@ class CreateConfessions extends Migration
             $table->text("title");
             $table->text("content");
             $table->boolean("public")->nullable();
-            $table->integer("paper_card");
             $table->timestamps();
         });
     }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateForeignKeyForConfessionsTable extends Migration
+class AddColumnUuidToConfessionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class CreateForeignKeyForConfessionsTable extends Migration
     public function up()
     {
         Schema::table('confessions', function (Blueprint $table) {
-            $table->foreignId('package_id')->after("content")->nullable()->constrained('packages')->onDelete('cascade');
-
+            $table->mediumText('uuid')->unique()->after("id");
         });
     }
 
@@ -27,7 +26,8 @@ class CreateForeignKeyForConfessionsTable extends Migration
     public function down()
     {
         Schema::table('confessions', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('package_id');
+            $table->mediumText('uuid')->unique()->after("id");
+            $table->dropColumn("uuid");
         });
     }
 }
