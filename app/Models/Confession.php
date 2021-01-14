@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Confession extends Model
 {
     use HasFactory;
+    const PUBLIC_NO = 0;
+    const PUBLIC_YES = 1;
 
 
     public  function package(): BelongsTo

@@ -7,24 +7,21 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class Order extends Mailable
+class CreateConfession extends Mailable
 {
     use Queueable, SerializesModels;
-
-    public $paymentLink, $name, $toPay;
+    public $createConfessionLinks, $name;
 
     /**
      * Create a new message instance.
      *
-     * @param $paymentLink
-     * @param $name
-     * @param $toPay
+     * @param array $createConfessionLinks
+     * @param string $name
      */
-    public function __construct($paymentLink, $name, $toPay)
+    public function __construct(array $createConfessionLinks, string $name)
     {
-        $this->paymentLink = $paymentLink;
+        $this->createConfessionLinks = $createConfessionLinks;
         $this->name = $name;
-        $this->toPay = $toPay;
     }
 
     /**
@@ -34,6 +31,6 @@ class Order extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.order');
+        return $this->markdown('emails.createConfession');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\SendEmailJob;
+use App\Jobs\Mail\OrderJob;
 use App\Models\AdditionalAttributeCart;
 use App\Models\AdditionalCostsPackage;
 use App\Models\AdditionalPackageAttribute;
@@ -16,6 +16,7 @@ use App\Rules\CartItems;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 
 class OrderController extends Controller
@@ -101,16 +102,17 @@ class OrderController extends Controller
             $toPay += $cart->package->price;
             $toPay += $cart->package->shipping_price;
 
+            if(isset($value['additionals'])) {
+                foreach ($value['additionals'] as $additional) {
+                    $additionalAttributeCart = new AdditionalAttributeCart();
 
-            foreach ($value['additionals'] as $additional) {
-                $additionalAttributeCart = new AdditionalAttributeCart();
+                    $additionalPackageAttribute = AdditionalPackageAttribute::find($additional['id']);
 
-                $additionalPackageAttribute = AdditionalPackageAttribute::find($additional['id']);
+                    $toPay += $additionalPackageAttribute->price;
 
-                $toPay += $additionalPackageAttribute->price;
-
-                $additionalAttributeCart->AdditionalPackageAttribute()->associate($additionalPackageAttribute);
-                $cart->additionalAttributeCart[] = $additionalAttributeCart;
+                    $additionalAttributeCart->AdditionalPackageAttribute()->associate($additionalPackageAttribute);
+                    $cart->additionalAttributeCart[] = $additionalAttributeCart;
+                }
             }
         }
         return $toPay;
@@ -131,7 +133,7 @@ class OrderController extends Controller
 
     protected function addCartData(Request $request, Order $order): bool
     {
-        $allOk  = true;
+        $allOk = true;
         foreach ($request['cartItems'] as $value) {
 
             $cart = new Cart();
@@ -139,25 +141,28 @@ class OrderController extends Controller
             $cart->package()->associate(Package::find($value['packageId']));
             $cart->order()->associate($order);
 
-            if($cart->save())
+            if ($cart->save())
                 $allOk = false;
 
-            foreach ($value['additionals'] as $additional) {
-                $additionalAttributeCart = new AdditionalAttributeCart();
+            if(isset($value['additionals'])) {
+                foreach ($value['additionals'] as $additional) {
+                    $additionalAttributeCart = new AdditionalAttributeCart();
 
-                $additionalPackageAttribute = AdditionalPackageAttribute::find($additional['id']);
+                    $additionalPackageAttribute = AdditionalPackageAttribute::find($additional['id']);
 
-                $additionalAttributeCart->AdditionalPackageAttribute()->associate($additionalPackageAttribute);
-                $additionalAttributeCart->cart()->associate($cart);
+                    $additionalAttributeCart->AdditionalPackageAttribute()->associate($additionalPackageAttribute);
+                    $additionalAttributeCart->cart()->associate($cart);
 
-                if(!$additionalAttributeCart->save())
-                    $allOk = false;
+                    if (!$additionalAttributeCart->save())
+                        $allOk = false;
+                }
             }
         }
         return $allOk;
     }
 
-    protected function failsCreate($message){
+    protected function failsCreate($message)
+    {
         return response()->json([
             'status' => 'ORDER_SERVER_ERROR',
             'statusCode' => 0,
@@ -172,12 +177,12 @@ class OrderController extends Controller
 
         if ($validator->fails()) {
 
-
             return response()->json([
                 'status' => 'ORDER_VALIDATION_ERROR',
                 'statusCode' => 0,
                 'statusMessage' => $validator->errors()
-            ])->setStatusCode(422);
+            ])->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+
         } else {
             $order = new Order;
 
@@ -204,7 +209,7 @@ class OrderController extends Controller
 
             $this->addCartData($request, $order);
 
-            $this->ordered($request, $order, $transactionLink);
+            $this->ordered($order, $transactionLink);
 
             return response()->json([
                 'status' => 'ORDER_SUCCESSFUL',
@@ -213,18 +218,18 @@ class OrderController extends Controller
                 'data' => [
                     'transactionLink' => $transactionLink,
                 ]
-            ]);
+            ], Response::HTTP_OK);
         }
     }
 
-    protected function ordered(Request $request, Order $order, $transactionLink)
+    protected function ordered(Order $order, $transactionLink)
     {
         $email = $order->billing->email;
         $payment = $order->payment;
-        $toPay = $payment->to_pay/100;
+        $toPay = $payment->to_pay / 100;
         $fullName = $order->billing->full_name;
 
-        dispatch_now(new SendEmailJob($email, $transactionLink, $fullName, $toPay));
+        dispatch_now(new orderJob($email, $transactionLink, $fullName, $toPay));
     }
 
     public function store(Request $request)

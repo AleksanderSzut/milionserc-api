@@ -14,7 +14,7 @@ class AddColumnUuidToConfessionsTable extends Migration
     public function up()
     {
         Schema::table('confessions', function (Blueprint $table) {
-            $table->mediumText('uuid')->after("id");
+            $table->uuid('uuid')->after("id");
         });
     }
 

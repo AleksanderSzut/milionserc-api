@@ -18,7 +18,6 @@ class CartItems implements Rule
         return [
             'packageId' => ['required', new PackageId],
             'additionals.*' => ['required', new Additionals()],
-            'additionals' => ['required'],
         ];
     }
 

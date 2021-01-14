@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('homepage');
 });
+Route::get('/mail', function () {
+    return new App\Mail\CreateConfession(['link'], 'Szut');
+});
 
 Route::get('/order', [OrderController::class, 'create'])->name('order.create');
 Route::get('/orders', [OrderController::class, 'index']);
