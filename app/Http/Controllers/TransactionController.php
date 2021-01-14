@@ -32,7 +32,6 @@ class TransactionController extends Controller
             if ($notification['tr_status'] == 'TRUE' && $notification['tr_error'] == 'none') {
                 $payment = Payment::where('transaction_title', $notification['tr_id'])->first();
 
-
                 if ($payment !== null) {
 
                     if ($payment->status === Payment::STATUS_WAITING) {

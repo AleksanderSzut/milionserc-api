@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateImgTable extends Migration
+class AddColumnStatusToConfessions extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreateImgTable extends Migration
      */
     public function up()
     {
-        Schema::create('img', function (Blueprint $table) {
-            $table->id('id');
-            $table->text("extension");
-            $table->timestamps();
+        Schema::table('confessions', function (Blueprint $table) {
+           $table->integer("status")->after("uuid");
         });
     }
 
@@ -27,6 +25,8 @@ class CreateImgTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('img');
+        Schema::table('confessions', function (Blueprint $table) {
+            $table->dropColumn("status");
+        });
     }
 }

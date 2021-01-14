@@ -23,8 +23,8 @@ Route::post('order', [OrderController::class, 'create']);
 Route::get('confessions', [OrderController::class, 'index']);
 Route::post('transactionReturnUrl', [TransactionController::class, 'create']);
 Route::get('confession/{uuid}/{access_code}', [ConfessionController::class, 'getConfession']);
+Route::post('confession/{uuid}/{access_code}', [ConfessionController::class, 'create']);
 Route::get('confessions', [OrderController::class, 'index']);
-
 
 Route::fallback(function(){
     return response()->json([
