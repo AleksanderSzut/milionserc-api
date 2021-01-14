@@ -30,8 +30,7 @@ class TransactionController extends Controller
             $notification = $notificationApi->getTpayNotification();
 
             if ($notification['tr_status'] == 'TRUE' && $notification['tr_error'] == 'none') {
-
-                $payment = Payment::where('transaction_title', 'TR-BRA-311VB2X')->first();
+                $payment = Payment::where('transaction_title', $notification['tr_id'])->first();
 
 
                 if ($payment !== null) {
