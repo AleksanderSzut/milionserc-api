@@ -11,6 +11,8 @@ class Image extends Model
 {
     use HasFactory, ProtectedFile;
 
+    protected $urlPath = "image";
+
     public  function Confession(): BelongsTo
     {
         return $this->belongsTo(Confession::class);

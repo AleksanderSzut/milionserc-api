@@ -11,6 +11,8 @@ class Video extends Model
 {
     use HasFactory, ProtectedFile;
 
+    protected $urlPath = "video";
+
     public  function Confession(): BelongsTo
     {
         return $this->belongsTo(Confession::class);

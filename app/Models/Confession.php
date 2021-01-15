@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Confession extends Model
 {
@@ -15,8 +15,19 @@ class Confession extends Model
     const STATUS_NO_CREATED = 0;
     const STATUS_CREATED = 1;
 
-    public function verifyConfession( $access_code) {
+    public function verifyConfession( $access_code): bool
+    {
         return $this->access_code === $access_code;
+    }
+
+    public function image(): HasMany
+    {
+        return $this->hasMany(Image::class);
+    }
+
+    public function video(): HasMany
+    {
+        return $this->hasMany(Video::class);
     }
 
     public  function package(): BelongsTo

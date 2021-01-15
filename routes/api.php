@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ConfessionController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,11 +21,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });*/
 
 Route::post('order', [OrderController::class, 'create']);
-Route::get('confessions', [OrderController::class, 'index']);
 Route::post('transactionReturnUrl', [TransactionController::class, 'create']);
 Route::get('confession/{uuid}/{access_code}', [ConfessionController::class, 'getConfession']);
 Route::post('confession/{uuid}/{access_code}', [ConfessionController::class, 'create']);
-Route::get('confessions', [OrderController::class, 'index']);
+Route::get('confessions', [ConfessionController::class, 'read']);
+Route::get('/search/confessions', [ConfessionController::class, 'read']);
 
 Route::fallback(function(){
     return response()->json([

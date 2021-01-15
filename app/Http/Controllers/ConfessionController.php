@@ -55,11 +55,12 @@ class ConfessionController extends Controller
                     if (isset($request['videos']))
                         foreach ($request['videos'] as $videoData) {
                             $video = new Video();
-                            $video->confession()->associate( $confession);
+                            $video->confession()->associate($confession);
                             $path = $videoData->store('videos');
                             $video->path = $path;
                             $video->save();
                         }
+                    $confession->status = Confession::STATUS_CREATED;
 
                     $confession->save();
 
@@ -85,6 +86,49 @@ class ConfessionController extends Controller
                 'statusCode' => 0,
                 'statusMessage' => "Confession with specified access code and uuid does not exist."
             ])->setStatusCode(Response::HTTP_UNAUTHORIZED);
+    }
+
+    protected function prepareConfessionsToArray($confessions): array
+    {
+        $data = [];
+
+        foreach ($confessions as $index => $confession) {
+            $data[$index]['title'] = $confession->title;
+            $data[$index]['content'] = $confession->content;
+            foreach ($confession->image as $indexImg => $image) {
+                $data[$index]['images'][$indexImg] = $image->getLink();
+            }
+            foreach ($confession->video as $indexVideo => $video) {
+                $data[$index]['videos'][$indexVideo] = $video->getLink();
+            }
+        }
+
+        return $data;
+
+    }
+
+    public function read(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = [];
+        $offset = (int)($request['offset'] ?? 0);
+        $per_page = (int)($request['per_page'] ?? 0);
+
+
+        if (isset($request['q']))
+            $confessions = Confession::where('title', 'like', '%' . $request['q'] . '%')->orWhere('content', 'like', '%' . $request['q'] . '%')->where('public', Confession::PUBLIC_YES)->offset($offset)->limit($per_page)->get();
+
+        else
+            $confessions = Confession::where('public', Confession::PUBLIC_YES)->offset($offset)->limit($per_page)->get();
+
+        $data['count'] = $confessions->count();
+        $data['confessions'] = $this->prepareConfessionsToArray($confessions);
+
+
+        return response()->json([
+            'status' => 'OK',
+            'statusCode' => 2,
+            'data' => $data,
+        ], Response::HTTP_OK);
     }
 
 

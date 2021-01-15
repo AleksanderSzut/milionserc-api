@@ -25,12 +25,13 @@ class TransactionController extends Controller
         try {
 
 
-            $notificationApi = new TransactionNotificationApi();
+//            $notificationApi = new TransactionNotificationApi();
 
-            $notification = $notificationApi->getTpayNotification();
+//            $notification = $notificationApi->getTpayNotification();
 
-            if ($notification['tr_status'] == 'TRUE' && $notification['tr_error'] == 'none') {
-                $payment = Payment::where('transaction_title', $notification['tr_id'])->first();
+//            if ($notification['tr_status'] == 'TRUE' && $notification['tr_error'] == 'none') {
+            if(true)    {
+            $payment = Payment::where('transaction_title', 'TR-BRA-31905SX')->first();
 
                 if ($payment !== null) {
 
@@ -55,6 +56,7 @@ class TransactionController extends Controller
                             $confession->content = null;
                             $confession->public = Confession::PUBLIC_NO;
                             $confession->access_code = Str::random(30);
+                            $confession->status = Confession::STATUS_NO_CREATED;
 
                             $createConfessionLinks[] = env("APP_URL") . '/stworz-wyznanie/' . $confession->uuid . '/' . $confession->access_code;
 
@@ -73,7 +75,7 @@ class TransactionController extends Controller
                             'statusMessage' => "Payment successful."
                         ])->setStatusCode(Response::HTTP_OK);
                     } else {
-                        Log::warning(json_encode($notification));
+//                        Log::warning(json_encode($notification));
                         Log::critical("payment was made earlier");
                         return response()->json([
                             'status' => 'PAYMENT_WAS_MADE_EARLIER',
@@ -82,7 +84,7 @@ class TransactionController extends Controller
                         ])->setStatusCode(Response::HTTP_NOT_ACCEPTABLE);
                     }
                 } else {
-                    Log::warning(json_encode($notification));
+//                    Log::warning(json_encode($notification));
                     Log::critical("Payment not exist");
                     return response()->json([
                         'status' => 'PAYMENT_NOT_EXIST',
@@ -91,7 +93,7 @@ class TransactionController extends Controller
                     ])->setStatusCode(Response::HTTP_NOT_FOUND);
                 }
             } else {
-                Log::warning(json_encode($notification));
+//                Log::warning(json_encode($notification));
                 Log::critical("Payment notification status false");
                 return response()->json([
                     'status' => 'PAYMENT_NOTIFICATION_STATUS_FALSE',

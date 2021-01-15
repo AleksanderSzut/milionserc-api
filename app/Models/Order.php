@@ -19,6 +19,18 @@ class Order extends Model
 
     protected $fillable = ['payment_id', 'billing_id', 'shipping_id', 'status'];
 
+    public function getStatusText(): string
+    {
+        switch ($this->status) {
+            case self::STATUS_NOT_PAID:
+                return "Zamówienie nie opłacone";
+            case self::STATUS_ACTIVE:
+                return "Zamówienie aktywne";
+            case self::STATUS_BLOCKED:
+                return "Zamówienie zablokowne";
+        }
+    }
+
     public  function shipping(): BelongsTo
     {
         return $this->belongsTo(Shipping::class);

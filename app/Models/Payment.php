@@ -19,7 +19,17 @@ class Payment extends Model
     {
         return $this->hasOne(Order::class);
     }
-
+    public function getStatusText(): string
+    {
+        switch ($this->status) {
+            case self::STATUS_WAITING:
+                return "Oczekiwanie na płatnośc";
+            case self::STATUS_PAID:
+                return "Transakcja opłacona";
+            case self::STATUS_REJECTED:
+                return "Transackcja odzucona";
+        }
+    }
     public function createTransaction(): bool
     {
         $to_pay = $this->to_pay / 100;
