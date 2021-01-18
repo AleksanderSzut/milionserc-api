@@ -38,7 +38,7 @@ class Payment extends Model
         $orderId = $order->id;
         $email = $order->billing->email;
         $name = $order->billing->full_name;
-        $returnUrl = config('app.url') . '?transaction_confirmation';
+        $returnUrl = config('app.url') . '/dziekujemy-za-platnosc';
         $resultUrl = env('APP_API_URL') . '/api/transactionReturnUrl';
 
         $transactionApi = new TransactionApi();

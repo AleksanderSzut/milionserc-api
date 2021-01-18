@@ -24,6 +24,10 @@ class Confession extends Model
     {
         return $this->hasMany(Image::class);
     }
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
+    }
 
     public function video(): HasMany
     {

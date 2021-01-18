@@ -24,6 +24,7 @@ Route::post('order', [OrderController::class, 'create']);
 Route::post('transactionReturnUrl', [TransactionController::class, 'create']);
 Route::get('confession/{uuid}/{access_code}', [ConfessionController::class, 'getConfession']);
 Route::post('confession/{uuid}/{access_code}', [ConfessionController::class, 'create']);
+Route::post('confession/public/{uuid}/{access_code}', [ConfessionController::class, 'setPublic']);
 Route::get('confessions', [ConfessionController::class, 'read']);
 Route::get('/search/confessions', [ConfessionController::class, 'read']);
 

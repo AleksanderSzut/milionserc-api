@@ -1,10 +1,10 @@
 @component('mail::message')
 # Dziękujemy {{$name}} za stworzenie wyznania.
 
-Link do wyznania:
+Link do wyznania: {{$confessionLink}}
 
 @component('mail::button', ['url' => $confessionLink])
-    $confessionLink
+    Przejdź do wyznania
 @endcomponent
 
 Dziękuje,<br>
