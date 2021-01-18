@@ -46,8 +46,8 @@ class TransactionController extends Controller
 
                         foreach ($payment->order->cart as $cart) {
                             $confession = new Confession();
-                            $confession->package()->associate($cart->package);
                             Log::warning(json_encode($cart->package));
+                            $confession->package()->associate($cart->package);
 
                             $confession->uuid = Str::uuid();
                             $confession->title = null;
