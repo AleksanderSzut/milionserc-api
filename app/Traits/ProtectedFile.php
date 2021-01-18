@@ -16,7 +16,7 @@ trait ProtectedFile
     }
 
     public function getPath() {
-        return storage_path("app\\" . str_replace('/', '\\', $this->path));
+        return storage_path("app/" . $this->path);
     }
 
 }
