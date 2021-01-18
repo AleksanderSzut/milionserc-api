@@ -151,7 +151,7 @@ class ConfessionController extends Controller
         $data['accessCode'] = $confession->access_code;
         $data['createdAt'] = $confession->created_at;
         $data['updatedAt'] = $confession->updated_at;
-
+        dd($confession->image);
         foreach ($confession->image as $indexImg => $image) {
             $data['images'][$indexImg] = $image->getLink();
         }
