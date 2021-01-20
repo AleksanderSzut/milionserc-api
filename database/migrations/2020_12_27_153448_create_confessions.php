@@ -15,10 +15,9 @@ class CreateConfessions extends Migration
     {
         Schema::create('confessions', function (Blueprint $table) {
             $table->id();
-            $table->text("title");
-            $table->text("content");
+            $table->text("title")->nullable();
+            $table->text("content")->nullable();
             $table->boolean("public")->nullable();
-            $table->integer("paper_card");
             $table->timestamps();
         });
     }

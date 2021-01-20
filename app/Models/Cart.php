@@ -2,23 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{
-    Factories\HasFactory,
+use Illuminate\Database\Eloquent\{Factories\HasFactory,
     Model,
+    Relations\BelongsTo,
+    Relations\BelongsToMany,
     Relations\HasMany,
-    Relations\HasOne
-};
+    Relations\HasOne};
 
 class Cart extends Model
 {
     use HasFactory;
 
-    public  function additionalAttributeCart(): HasMany
+    public  function additionalAttributeCart(): BelongsToMany
     {
-        return $this->hasMany(AdditionalAttributeCart::class);
+        return $this->belongsToMany(AdditionalAttributeCart::class);
     }
-    public function package(): HasOne
+    public function package(): BelongsTo
     {
-        return $this->hasOne(Package::class);
+        return $this->belongsTo(Package::class);
+    }
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
     }
 }

@@ -14,7 +14,7 @@ class CreateForeignKeyForConfessionsTable extends Migration
     public function up()
     {
         Schema::table('confessions', function (Blueprint $table) {
-            $table->foreignId('package_id')->nullable()->constrained('packages')->onDelete('cascade');
+            $table->foreignId('package_id')->after("content")->nullable()->constrained('packages')->onDelete('cascade');
 
         });
     }

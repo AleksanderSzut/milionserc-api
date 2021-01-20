@@ -14,9 +14,9 @@ class CreateForeignKeyForOrderTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->foreignId('shipping_id')->nullable()->constrained('shippings')->onDelete('cascade');
-            $table->foreignId('payment_id')->nullable()->constrained('payments')->onDelete('cascade');
-            $table->foreignId('billing_id')->nullable()->constrained('billings')->onDelete('cascade');
+            $table->foreignId('shipping_id')->nullable()->after("id")->constrained('shippings')->onDelete('cascade');
+            $table->foreignId('payment_id')->nullable()->after("id")->constrained('payments')->onDelete('cascade');
+            $table->foreignId('billing_id')->nullable()->after("id")->constrained('billings')->onDelete('cascade');
 
         });
     }
