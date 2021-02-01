@@ -29,7 +29,7 @@ class CreateConfession extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): CreateConfession
     {
         return $this->markdown('emails.createConfession');
     }
